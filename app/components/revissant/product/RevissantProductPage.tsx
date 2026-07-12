@@ -1,8 +1,15 @@
 import React, {useEffect, useMemo, useRef, useState} from 'react';
-import {Link, useLocation, useNavigate, useSearchParams} from 'react-router';
+import {
+  Link,
+  useLocation,
+  useNavigate,
+  useParams,
+  useSearchParams,
+} from 'react-router';
 import {AddToCartButton} from '~/components/AddToCartButton';
 import {useAside} from '~/components/Aside';
 import {pushToast} from '~/components/revissant/ui/toast';
+import {getLocalePathPrefix} from '~/components/revissant/utils/getLocalePathPrefix';
 type Money = {amount: string; currencyCode: string};
 
 type ProductImage = {
@@ -91,8 +98,14 @@ export function RevissantProductPage(props: {
 
   const navigate = useNavigate();
   const location = useLocation();
+  const {locale} = useParams();
   const {open} = useAside();
   const [searchParams] = useSearchParams();
+  const localePrefix = getLocalePathPrefix(locale);
+
+  function getProductPath(handle: string) {
+    return `${localePrefix}/products/${handle}`;
+  }
 
  // ---------- COLOR SWATCHES (shopify options) ----------
   const colorOption =
@@ -252,6 +265,9 @@ useEffect(() => {
           padding: 32px 16px 80px;
           animation: rvpFade 220ms ease-out;
         }
+        @media (max-width: 640px){
+          .rvp-root{ padding-top: 8px; }
+        }
         @keyframes rvpFade{
           from{opacity:0; transform:translateY(4px);}
           to{opacity:1; transform:translateY(0);}
@@ -268,6 +284,12 @@ useEffect(() => {
           gap: 48px;
           align-items:center;
           margin-bottom: 96px;
+        }
+        @media (max-width: 640px){
+          .rvp-top{
+            gap: 34px;
+            margin-bottom: 64px;
+          }
         }
         @media (min-width: 1024px){
           .rvp-top{
@@ -313,10 +335,20 @@ useEffect(() => {
           overflow:hidden;
           background: var(--rv-gray-100);
         }
+        @media (max-width: 640px){
+          .rvp-imgFrame{
+            width: min(82vw, 280px);
+            aspect-ratio: 1 / 1.12;
+          }
+          .rvp-arrow{
+            width: 34px;
+            height: 44px;
+          }
+        }
         .rvp-img{
           width: 100%;
           height: 100%;
-          object-fit: cover;
+          object-fit: contain;
         }
 
         /* RIGHT - DETAILS */
@@ -341,7 +373,8 @@ useEffect(() => {
           line-height: 1.05;
           margin: 0 0 10px;
           letter-spacing: .02em;
-          font-size: 42px;
+          font-size: clamp(26px, 9vw, 42px);
+          overflow-wrap: anywhere;
         }
         @media (min-width: 1024px){
           .rvp-title{ font-size: 52px; }
@@ -441,7 +474,7 @@ useEffect(() => {
         .rvp-price{
           color: var(--rv-dark);
           font-weight: 900;
-          font-size: 54px;
+          font-size: clamp(34px, 12vw, 54px);
           letter-spacing: .02em;
         }
         .rvp-addBtn{
@@ -742,11 +775,11 @@ useEffect(() => {
                     <>
                 <div
                   className="rvp-cardImgWrap"
-                  onClick={() => navigate(`/products/${r.handle}`)}
+                  onClick={() => navigate(getProductPath(r.handle))}
                   role="button"
                   tabIndex={0}
                   onKeyDown={(e) => {
-                    if (e.key === 'Enter') navigate(`/products/${r.handle}`);
+                    if (e.key === 'Enter') navigate(getProductPath(r.handle));
                   }}
                 >
                   {r.featuredImage?.url ? (
@@ -766,7 +799,7 @@ useEffect(() => {
 
                 <div style={{width: '100%'}}>
                   <Link
-                    to={`/products/${r.handle}`}
+                    to={getProductPath(r.handle)}
                     className="rvp-cardNameLink"
                   >
                     <div className="rvp-cardName">{r.title}</div>
@@ -805,7 +838,7 @@ useEffect(() => {
 
                   {/* opcional: link invisível para debug */}
                   <div style={{opacity: 0}}>
-                    <Link to={`/products/${r.handle}`}>Open</Link>
+                    <Link to={getProductPath(r.handle)}>Open</Link>
                   </div>
                 </div>
                     </>

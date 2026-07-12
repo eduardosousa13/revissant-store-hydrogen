@@ -8,10 +8,6 @@
   --color-light: #fff;
 }
 
-.revissant img {
-  border-radius: 4px;
-}
-
 .revissant-header {
   position: fixed;
   top: 0;
@@ -150,16 +146,25 @@
 
 @media (max-width: 640px) {
   .revissant-header__inner {
-    padding: 0 18px;
+    padding: 0 14px;
     height: 70px;
   }
 
   .revissant-header__logo-img {
-    height: 26px;
+    height: 20px;
   }
 
   .revissant-header__right {
-    gap: 10px;
+    gap: 6px;
+  }
+
+  .revissant-header__currency {
+    font-size: 12px;
+    letter-spacing: 0.14em;
+  }
+
+  .revissant-header__icon-btn {
+    padding: 5px;
   }
 }
 

@@ -4,11 +4,13 @@ import {
   Link,
   useLoaderData,
   useNavigate,
+  useParams,
   useSubmit,
 } from 'react-router';
 import {AddToCartButton} from '~/components/AddToCartButton';
 import {useAside} from '~/components/Aside';
 import {pushToast} from '~/components/revissant/ui/toast';
+import {getLocalePathPrefix} from '~/components/revissant/utils/getLocalePathPrefix';
 import type {loader} from '~/routes/($locale).catalog';
 
 type CatalogLoaderData = Awaited<ReturnType<typeof loader>>;
@@ -55,7 +57,9 @@ export function RevissantCatalogPage() {
 
   const {open} = useAside();
   const navigate = useNavigate();
+  const {locale} = useParams();
   const submit = useSubmit();
+  const localePrefix = getLocalePathPrefix(locale);
 
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [isPriceOpen, setIsPriceOpen] = useState(false);
@@ -85,6 +89,10 @@ export function RevissantCatalogPage() {
 
   function onAutoSubmit(e: React.ChangeEvent<HTMLFormElement>) {
     submit(e.currentTarget, {replace: true});
+  }
+
+  function getProductPath(handle: string) {
+    return `${localePrefix}/products/${handle}`;
   }
 
   return (
@@ -117,11 +125,13 @@ export function RevissantCatalogPage() {
         .rv-title{
           text-align:center;
           font-family: ui-serif, Georgia, 'Times New Roman', serif;
-          letter-spacing: .18em;
+          letter-spacing: clamp(.08em, 4vw, .18em);
           font-weight: 500;
           color: var(--rv-text);
-          font-size: 42px;
+          font-size: clamp(31px, 10vw, 42px);
+          line-height: 1.05;
           margin: 12px 0 40px;
+          overflow-wrap: anywhere;
         }
 
         .rv-shell{
@@ -678,11 +688,11 @@ export function RevissantCatalogPage() {
                     <div key={p.id} className="rv-card">
                       <div
                         className="rv-imgWrap"
-                        onClick={() => navigate(`/products/${p.handle}`)}
+                        onClick={() => navigate(getProductPath(p.handle))}
                         role="button"
                         tabIndex={0}
                         onKeyDown={(e) => {
-                          if (e.key === 'Enter') navigate(`/products/${p.handle}`);
+                          if (e.key === 'Enter') navigate(getProductPath(p.handle));
                         }}
                       >
                         {imgUrl ? (
@@ -706,7 +716,7 @@ export function RevissantCatalogPage() {
 
                       <div className="rv-info">
                         <Link
-                          to={`/products/${p.handle}`}
+                          to={getProductPath(p.handle)}
                           className="rv-nameLink"
                         >
                           <h3 className="rv-name">{p.title}</h3>
@@ -743,7 +753,7 @@ export function RevissantCatalogPage() {
 
                         {/* link discreto para debug (podes remover depois) */}
                         <div style={{marginTop: 10, opacity: 0.0}}>
-                          <Link to={`/products/${p.handle}`}>Open</Link>
+                          <Link to={getProductPath(p.handle)}>Open</Link>
                         </div>
                       </div>
                     </div>

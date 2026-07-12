@@ -1,7 +1,8 @@
 import {useEffect, useState} from 'react';
-import {Link} from 'react-router';
+import {Link, useParams} from 'react-router';
 import {useAside} from '~/components/Aside';
 import {useLockBodyScroll} from '~/components/revissant/hooks/useLockBodyScroll';
+import {getLocalePathPrefix} from '~/components/revissant/utils/getLocalePathPrefix';
 
 const MENU_ITEMS: Array<{label: string; to: string}> = [
   {label: 'CATALOG', to: '/catalog'},
@@ -10,10 +11,12 @@ const MENU_ITEMS: Array<{label: string; to: string}> = [
 ];
 
 export function RevissantMobileMenuAside() {
+  const {locale} = useParams();
   const {type, close} = useAside();
   const open = type === 'mobile';
   const [isVisible, setIsVisible] = useState(open);
   const [isClosing, setIsClosing] = useState(false);
+  const localePrefix = getLocalePathPrefix(locale);
 
   const animationMs = 500;
 
@@ -95,7 +98,7 @@ export function RevissantMobileMenuAside() {
             {MENU_ITEMS.map((item) => (
               <Link
                 key={item.label}
-                to={item.to}
+                to={`${localePrefix}${item.to}`}
                 className="revissant-mobile-menu__link"
                 onClick={close}
               >

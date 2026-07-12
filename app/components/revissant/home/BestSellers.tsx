@@ -1,5 +1,6 @@
 import {useMemo, useState} from 'react';
-import {Link} from 'react-router';
+import {Link, useParams} from 'react-router';
+import {getLocalePathPrefix} from '~/components/revissant/utils/getLocalePathPrefix';
 
 type BestSellerProduct = {
   id: string;
@@ -109,6 +110,8 @@ function formatMoney(amount?: string, currency?: string) {
 }
 
 export function BestSellers({products}: BestSellersProps) {
+  const {locale} = useParams();
+  const localePrefix = getLocalePathPrefix(locale);
   const carouselProducts = useMemo(
     () => products?.filter(Boolean) ?? [],
     [products],
@@ -200,7 +203,7 @@ export function BestSellers({products}: BestSellersProps) {
                 return (
                   <Link
                     key={product.id}
-                    to={`/products/${product.handle}`}
+                    to={`${localePrefix}/products/${product.handle}`}
                     prefetch="intent"
                     className={containerClasses}
                     aria-label={`Open ${product.title}`}
@@ -275,7 +278,7 @@ export function BestSellers({products}: BestSellersProps) {
 
       <div className="w-full text-right px-12 mt-8 relative z-20 hidden md:block">
         <Link
-          to="/catalog"
+          to={`${localePrefix}/catalog`}
           prefetch="intent"
           className="text-[#0F2445] font-bold text-xl uppercase tracking-widest hover:text-blue-400 transition-colors border-b-2 border-transparent hover:border-blue-400 inline-block pb-1"
         >

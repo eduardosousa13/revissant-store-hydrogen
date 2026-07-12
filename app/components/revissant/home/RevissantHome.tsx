@@ -1,5 +1,5 @@
 // app/components/revissant/home/RevissantHome.tsx
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import {WelcomeScreen} from './WelcomeScreen';
 import {NewsletterPopup} from './NewsletterPopup';
 import {Hero} from './Hero';
@@ -28,14 +28,35 @@ type RevissantHomeProps = {
   bestSellers?: BestSellerProduct[];
 };
 
+const WELCOME_SESSION_KEY = 'revissant:welcome-seen';
+
 export function RevissantHome({bestSellers = []}: RevissantHomeProps) {
-  const [isWelcomeDone, setIsWelcomeDone] = useState(false);
+  const [shouldShowWelcome, setShouldShowWelcome] = useState(false);
+
+  useEffect(() => {
+    try {
+      setShouldShowWelcome(
+        window.sessionStorage.getItem(WELCOME_SESSION_KEY) !== 'true',
+      );
+    } catch {
+      setShouldShowWelcome(true);
+    }
+  }, []);
+
+  function handleWelcomeFinished() {
+    try {
+      window.sessionStorage.setItem(WELCOME_SESSION_KEY, 'true');
+    } catch {
+      // If storage is unavailable, still unblock the storefront for this render.
+    }
+    setShouldShowWelcome(false);
+  }
 
   return (
     <main className="min-h-screen flex flex-col bg-[#0F2445]">
-      {!isWelcomeDone && (
-        <WelcomeScreen onFinished={() => setIsWelcomeDone(true)} />
-      )}
+      {shouldShowWelcome ? (
+        <WelcomeScreen onFinished={handleWelcomeFinished} />
+      ) : null}
 
       <NewsletterPopup />
 

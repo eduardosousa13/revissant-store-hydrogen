@@ -1,4 +1,5 @@
-import {Link} from 'react-router';
+import {Link, useParams} from 'react-router';
+import {getLocalePathPrefix} from '~/components/revissant/utils/getLocalePathPrefix';
 
 /**
  * FEATURES (AI Studio) → Hydrogen
@@ -109,6 +110,9 @@ function IconRotateCcw({size = 36, strokeWidth = 1, className}: IconProps) {
 }
 
 export function Features() {
+  const {locale} = useParams();
+  const localePrefix = getLocalePathPrefix(locale);
+
   return (
     <section className="w-full">
       {/* Features Icons Section (THE REVISSANT STANDARD) */}
@@ -228,7 +232,7 @@ export function Features() {
             </p>
 
             <Link
-              to="/catalog"
+              to={`${localePrefix}/catalog`}
               prefetch="intent"
               className="bg-white text-[#0F2445] px-10 py-4 rounded-none text-xs font-bold tracking-[0.25em] uppercase hover:bg-blue-200 hover:text-[#0F2445] transition-all duration-300 shadow-lg relative z-10 inline-block whitespace-nowrap"
             >

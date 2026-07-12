@@ -61,7 +61,7 @@ export function Hero() {
               marginTop: 'clamp(4px, 0.8vw, 10px)',
               // `animate-fade-in` também anima `transform`; usa `top` para o ajuste fino.
               position: 'relative',
-              top: '65px',
+              top: 'clamp(28px, 7vw, 65px)',
             }}
           />
 
@@ -82,7 +82,7 @@ export function Hero() {
             style={{
               animationDelay: '200ms',
               textDecoration: 'none',
-              top: 'clamp(-90px, -8vh, -120px)',
+              top: 'clamp(-58px, -6vh, -90px)',
             }}
           >
             EXPLORE
@@ -109,6 +109,14 @@ export function Hero() {
           background-color: #ffffff !important;
           color: #0f2445 !important;
           border-color: #ffffff !important;
+        }
+
+        @media (max-width: 420px) {
+          .hero-explore-link {
+            padding-left: 2rem;
+            padding-right: 2rem;
+            top: -34px !important;
+          }
         }
       `}</style>
     </section>

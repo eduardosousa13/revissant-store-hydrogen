@@ -8,14 +8,16 @@ type WelcomeScreenProps = {
 /**
  * WelcomeScreen (REVISSANT) - versão com LOGO WHITE.
  * - Mostra o overlay
- * - Aguarda 2.5s
- * - Faz fade-out 1s
+ * - Aguarda brevemente
+ * - Faz fade-out curto
  * - Chama onFinished()
  *
  * SSR-safe: window só dentro de useEffect.
  */
 export function WelcomeScreen({onFinished}: WelcomeScreenProps) {
   const [isVisible, setIsVisible] = useState(true);
+  const displayMs = 1400;
+  const fadeMs = 500;
 
   // Bloquear scroll enquanto estiver visível
   useLockBodyScroll(true);
@@ -26,11 +28,11 @@ export function WelcomeScreen({onFinished}: WelcomeScreenProps) {
     const timer = window.setTimeout(() => {
       setIsVisible(false);
 
-      // esperar o fade-out (1s) antes de finalizar
+      // esperar o fade-out antes de finalizar
       finishTimer = window.setTimeout(() => {
         onFinished();
-      }, 1000);
-    }, 2500);
+      }, fadeMs);
+    }, displayMs);
 
     return () => {
       window.clearTimeout(timer);
@@ -42,7 +44,7 @@ export function WelcomeScreen({onFinished}: WelcomeScreenProps) {
     <div
       className={[
         'fixed inset-0 z-[200] flex items-center justify-center',
-        'transition-opacity duration-1000 ease-in-out',
+        'transition-opacity duration-500 ease-in-out',
         isVisible ? 'opacity-100' : 'opacity-0 pointer-events-none',
       ].join(' ')}
       style={{backgroundColor: '#0F2445'}}
@@ -63,10 +65,10 @@ export function WelcomeScreen({onFinished}: WelcomeScreenProps) {
           style={{transform: 'translateY(clamp(-152px, -19vw, -230px))'}}
         >
           {/* Divider Line Animation */}
-          <div className="h-px bg-blue-200/50 w-0 mx-auto animate-[width_1.5s_ease-out_forwards_0.5s] mb-6" />
+          <div className="h-px bg-blue-200/50 w-0 mx-auto animate-[width_800ms_ease-out_forwards_200ms] mb-6" />
 
           {/* Welcome Text Animation */}
-          <p className="m-0 text-blue-100 font-sans text-xs md:text-sm tracking-[0.4em] uppercase opacity-0 animate-[fadeIn_1s_ease-out_forwards_1s]">
+          <p className="m-0 text-blue-100 font-sans text-xs md:text-sm tracking-[0.4em] uppercase opacity-0 animate-[fadeIn_600ms_ease-out_forwards_550ms]">
             Welcome to the new standard
           </p>
         </div>

@@ -119,6 +119,7 @@ function CartDrawerContent({
                   const image = merchandise?.image;
                   const productTitle = merchandise?.product?.title ?? 'Product';
                   const colorLabel = getColorLabel(line);
+                  const quantity = line.quantity ?? 0;
 
                   return (
                     <div key={line.id} className="flex gap-4 min-w-0">
@@ -142,13 +143,7 @@ function CartDrawerContent({
                           <p className="text-sm text-gray-500">{colorLabel}</p>
                         </div>
                         <div className="flex justify-between items-end">
-                          <span className="font-medium text-revissant-dark">
-                            {line.cost?.amountPerQuantity ? (
-                              <Money data={line.cost.amountPerQuantity} />
-                            ) : (
-                              '-'
-                            )}
-                          </span>
+                          <CartLinePrice quantity={quantity} line={line} />
                           <CartForm
                             route="/cart"
                             action={CartForm.ACTIONS.LinesRemove}
@@ -215,4 +210,40 @@ function getColorLabel(line: CartLine) {
     option.name.toLowerCase().includes('color'),
   )?.value;
   return color || options[0]?.value || 'Standard';
+}
+
+function CartLinePrice({
+  line,
+  quantity,
+}: {
+  line: CartLine;
+  quantity: number;
+}) {
+  const unitAmount = line.cost?.amountPerQuantity;
+  const totalAmount = line.cost?.totalAmount;
+
+  if (!unitAmount) {
+    return <span className="font-medium text-revissant-dark">-</span>;
+  }
+
+  if (quantity <= 1 || !totalAmount) {
+    return (
+      <span className="font-medium text-revissant-dark">
+        <Money data={totalAmount ?? unitAmount} />
+      </span>
+    );
+  }
+
+  return (
+    <span className="flex flex-wrap items-center gap-1.5 text-sm font-medium text-revissant-dark">
+      <Money data={unitAmount} />
+      <span className="inline-flex items-center justify-center bg-revissant-dark px-2 py-0.5 text-xs font-bold tracking-wide text-white">
+        x{quantity}
+      </span>
+      <span className="text-gray-400">=</span>
+      <span className="font-bold">
+        <Money data={totalAmount} />
+      </span>
+    </span>
+  );
 }
